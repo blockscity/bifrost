@@ -23,7 +23,11 @@
     "react-native-crypto": "^2.1.2",
     "react-native-navigation": "^1.1.458",
     "react-native-randombytes": "^3.1.0",
+    "react-redux": "^5.0.7",
     "readable-stream": "^2.3.6",
+    "redux": "^4.0.0",
+    "redux-persist": "^5.9.1",
+    "redux-saga": "^0.16.0",
     "vm-browserify": "^1.0.1",
     "web3": "^0.20.6"
   },
