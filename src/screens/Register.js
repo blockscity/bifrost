@@ -15,7 +15,7 @@ class Register extends React.Component {
         const {createIdentity, identity} = this.props;
         return (
             <ScrollView style={styles.container}>
-                <Row title={'Register'} onPress={createIdentity("sjkyspa", "password")}/>
+                <Row title={'Register'} onPress={() => createIdentity("sjkyspa", "password")}/>
                 <Text>{JSON.stringify(identity)}</Text>
             </ScrollView>
         );
@@ -36,7 +36,10 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        createIdentity: (username, password) => dispatch(actions.createIdentity({username: username, password: password}))
+        createIdentity: (username, password) => dispatch(actions.createIdentity({
+            username: username,
+            password: password
+        }))
     }
 }
 

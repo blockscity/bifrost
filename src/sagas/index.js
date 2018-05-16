@@ -6,7 +6,7 @@ import {identities} from '../services';
 
 function* logger() {
     while (true) {
-        var action = yield take("*");
+        const action = yield take("*");
         const state = yield select();
         console.log("Action: " + JSON.stringify(action) + " happend with state: " + JSON.stringify(state));
     }
@@ -14,12 +14,11 @@ function* logger() {
 
 function* authentication() {
     function* signin(payload, meta) {
-        const identity = yield select(identity);
-        if (!identity || isEmpty(identity)) {
-            yield call(identities.createIdentity(payload.username, payload.password), values);
+        const identi = yield select(identity);
+        if (!identi || isEmpty(identi)) {
+            yield call(identities.createIdentity, payload.username, payload.password);
         } else {
-            // yield put(actions.signin.success(values, user));
-            yield call(identities.createIdentity(payload.username, payload.password), values);
+            yield call(identities.createIdentity, payload.username, payload.password);
         }
     }
 
@@ -34,6 +33,8 @@ function* authentication() {
         }
     }
 }
+
+
 
 export default function* () {
     yield [

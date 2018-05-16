@@ -1,3 +1,3 @@
-import * as _apis from './Identities'
+import * as identities from './identities'
 
-export const identities = _apis;
+export {identities}

@@ -4,15 +4,11 @@ import Transaction from "ethereumjs-tx";
 import {Wallet} from "ethers";
 import {Alert} from "react-native";
 
-const createIdentiy = (username, password) => {
+export const createIdentity = (username, password) => {
     var Web3 = require('web3');
     var web3 = new Web3();
     Wallet.fromBrainWallet(username, password).then(random => {
-        this.setState({
-            wallet: random.address,
-        })
         console.log(random.address);
-
 
         web3.setProvider(new web3.providers.HttpProvider("http://127.0.0.1:8545"))
         let IdentitiesContract = web3.eth.contract(Identities.abi);
@@ -35,9 +31,6 @@ const createIdentiy = (username, password) => {
                 let serialize = tx.serialize().toString("hex");
                 console.log(Wallet.parseTransaction("0x" + serialize));
 
-                this.setState({
-                    ser: serialize
-                });
                 // web3.eth.sendRawTransaction('0x' + serialize, (err, res) => {
                 //     if (err) {
                 //         console.log("err", err)
@@ -48,4 +41,4 @@ const createIdentiy = (username, password) => {
             }
         });
     })
-}
+};

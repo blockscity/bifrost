@@ -20,9 +20,54 @@ configureStore().then(store => {
         title: 'Navigation Actions',
     }];
 
+    // Navigation.startTabBasedApp({
+    //     tabs,
+    //     animationType: Platform.OS === 'ios' ? 'slide-down' : 'fade',
+    //     tabsStyle: {
+    //         tabBarBackgroundColor: '#003a66',
+    //         tabBarButtonColor: '#ffffff',
+    //         tabBarSelectedButtonColor: '#ff505c',
+    //         tabFontFamily: 'BioRhyme-Bold',
+    //     },
+    //     appStyle: {
+    //         tabBarBackgroundColor: '#003a66',
+    //         navBarButtonColor: '#ffffff',
+    //         tabBarButtonColor: '#ffffff',
+    //         navBarTextColor: '#ffffff',
+    //         tabBarSelectedButtonColor: '#ff505c',
+    //         navigationBarColor: '#003a66',
+    //         navBarBackgroundColor: '#003a66',
+    //         statusBarColor: '#002b4c',
+    //         tabFontFamily: 'BioRhyme-Bold',
+    //     }
+    // });
+
     store.subscribe(() => {
-        let state = store.getState();
-        console.log(state);
+        let {identity} = store.getState();
+        if (this.currentIden !== identity) {
+            this.currentIden = identity;
+            Navigation.startTabBasedApp({
+                tabs,
+                animationType: Platform.OS === 'ios' ? 'slide-down' : 'fade',
+                tabsStyle: {
+                    tabBarBackgroundColor: '#003a66',
+                    tabBarButtonColor: '#ffffff',
+                    tabBarSelectedButtonColor: '#ff505c',
+                    tabFontFamily: 'BioRhyme-Bold',
+                },
+                appStyle: {
+                    tabBarBackgroundColor: '#003a66',
+                    navBarButtonColor: '#ffffff',
+                    tabBarButtonColor: '#ffffff',
+                    navBarTextColor: '#ffffff',
+                    tabBarSelectedButtonColor: '#ff505c',
+                    navigationBarColor: '#003a66',
+                    navBarBackgroundColor: '#003a66',
+                    statusBarColor: '#002b4c',
+                    tabFontFamily: 'BioRhyme-Bold',
+                }
+            });
+        }
 
         // Navigation.startSingleScreenApp({
         //     screen: {
@@ -32,27 +77,6 @@ configureStore().then(store => {
         //         navigatorButtons: {} // override the nav buttons for the screen, see "Adding buttons to the navigator" below (optional)
         //     },
         // });
-        Navigation.startTabBasedApp({
-            tabs,
-            animationType: Platform.OS === 'ios' ? 'slide-down' : 'fade',
-            tabsStyle: {
-                tabBarBackgroundColor: '#003a66',
-                tabBarButtonColor: '#ffffff',
-                tabBarSelectedButtonColor: '#ff505c',
-                tabFontFamily: 'BioRhyme-Bold',
-            },
-            appStyle: {
-                tabBarBackgroundColor: '#003a66',
-                navBarButtonColor: '#ffffff',
-                tabBarButtonColor: '#ffffff',
-                navBarTextColor: '#ffffff',
-                tabBarSelectedButtonColor: '#ff505c',
-                navigationBarColor: '#003a66',
-                navBarBackgroundColor: '#003a66',
-                statusBarColor: '#002b4c',
-                tabFontFamily: 'BioRhyme-Bold',
-            }
-        });
         // }
     });
 
