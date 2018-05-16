@@ -1,10 +1,9 @@
 import React from 'react';
 import {StyleSheet, ScrollView, Text, Alert} from 'react-native';
 import Row from '../components/Row';
-import {HDNode, providers, utils, Wallet, Contract, Interface} from 'ethers';
+import {Wallet} from 'ethers';
 import Identities from '../contracts/Identities.json'
 import Transaction from 'ethereumjs-tx';
-// import abi from 'ethereumjs-abi';
 import Config from 'react-native-config';
 
 var Web3 = require('web3');
@@ -30,51 +29,42 @@ class Transitions extends React.Component {
             this.setState({
                 wallet: random.address,
             })
+            console.log(random.address);
 
 
-            web3.setProvider(new web3.providers.HttpProvider(Config.PROFIDER))
+            web3.setProvider(new web3.providers.HttpProvider("http://127.0.0.1:8545"))
             let IdentitiesContract = web3.eth.contract(Identities.abi);
-            let identities = IdentitiesContract.at(Config.IDENTITES_ADDR);
+            let identities = IdentitiesContract.at("0xf04ed3ee45b5898f19d3991e31bd1a994e4e5068");
             let data = identities.createIdentity.getData(random.address, random.address);
-            
 
-            let gas = new Promise((resolve, reject) => {
-                return web3.eth.estimateGas({
-                    from: random.address,
-                    data: data
-                }, (err, gas) => {
-                    if (err) {
-                        reject(err)
-                    } else {
-                        resolve(gas)
-                    }
-                });
+            identities.createIdentity.estimateGas(random.address, random.address, (err, gas) => {
+                if (err) {
+                    Alert.alert("error", err.toString());
+                } else {
+                    let tx = new Transaction({
+                        from: random.address,
+                        to: Config.IDENTITES_ADDR,
+                        gas: gas,
+                        data: data,
+                        gasLimit: web3.toHex(25000),
+                        gasPrice: web3.toHex(10e9),
+                    });
+                    tx.sign(Buffer.from(random.privateKey.slice(2), 'hex'));
+                    let serialize = tx.serialize().toString("hex");
+                    console.log(Wallet.parseTransaction("0x" + serialize));
+
+                    this.setState({
+                        ser: serialize
+                    });
+                    // web3.eth.sendRawTransaction('0x' + serialize, (err, res) => {
+                    //     if (err) {
+                    //         console.log("err", err)
+                    //     } else {
+                    //         console.log("res", res);
+                    //     }
+                    // })
+                }
             });
-            gas.then(g => {
-                let tx = new Transaction({
-                    from: random.address,
-                    to: Config.IDENTITES_ADDR,
-                    gas: g,
-                    data: data,
-                    gasLimit: web3.toHex(25000),
-                    gasPrice: web3.toHex(10e9),
-                });
-                tx.sign(Buffer.from(random.privateKey.slice(2), 'hex'));
-                let serialize = tx.serialize().toString("hex");
-
-                this.setState({
-                    ser: utils.hexlify(serialize)
-                })
-                web3.eth.sendRawTransaction('0x' + serialize, (err, res) => {
-                    if (err) {
-                        Alert.alert("err", err.toString())
-                    } else {
-                        Alert.alert("succ", res.toString())
-                    }
-                })
-            }).catch(err => {
-                Alert.alert("error", err.toString())
-            })
         })
     };
 
