@@ -1,10 +1,9 @@
 import {combineReducers} from 'redux';
 
 const reducers = combineReducers({
-    nav: (state = {}, action) => {
+    identity: (state = {}, action) => {
         return state;
     }
 });
-
 
 export default reducers

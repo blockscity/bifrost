@@ -1,27 +1,43 @@
-import { take, put, call, fork, race, cancelled } from 'redux-saga/effects'
-import { eventChannel, END } from 'redux-saga'
+import {take, fork, select, call, put} from 'redux-saga/effects';
+import {isEmpty} from 'lodash';
+import * as actions from '../actions';
+import {identity} from '../reducers/selectors'
+import {identities} from '../services';
 
-export const INCREMENT = 'INCREMENT'
-export const DECREMENT = 'DECREMENT'
-export const INCREMENT_IF_ODD = 'INCREMENT_IF_ODD'
-
-export const INCREMENT_ASYNC = 'INCREMENT_ASYNC'
-export const CANCEL_INCREMENT_ASYNC = 'CANCEL_INCREMENT_ASYNC'
-
-export const COUNTDOWN_TERMINATED = 'COUNTDOWN_TERMINATED'
-export function* watchIncrementAsync() {
-    try {
-        while (true) {
-            const action = yield take(INCREMENT_ASYNC)
-            // starts a 'Race' between an async increment and a user cancel action
-            // if user cancel action wins, the incrementAsync will be cancelled automatically
-            yield race([call(incrementAsync, action), take(CANCEL_INCREMENT_ASYNC)])
-        }
-    } finally {
-        console.log('watchIncrementAsync terminated')
+function* logger() {
+    while (true) {
+        var action = yield take("*");
+        const state = yield select();
+        console.log("Action: " + JSON.stringify(action) + " happend with state: " + JSON.stringify(state));
     }
 }
 
-export default function* rootSaga() {
-    yield fork(watchIncrementAsync)
+function* authentication() {
+    function* signin(payload, meta) {
+        const identity = yield select(identity);
+        if (!identity || isEmpty(identity)) {
+            yield call(identities.createIdentity(payload.username, payload.password), values);
+        } else {
+            // yield put(actions.signin.success(values, user));
+            yield call(identities.createIdentity(payload.username, payload.password), values);
+        }
+    }
+
+    while (true) {
+        const {type, payload, meta} = yield take(["IDENTITY_CREATE"]);
+        switch (type) {
+            case "IDENTITY_CREATE":
+                yield fork(signin, payload, meta);
+                break;
+            default:
+                continue;
+        }
+    }
+}
+
+export default function* () {
+    yield [
+        fork(logger),
+        fork(authentication),
+    ];
 }

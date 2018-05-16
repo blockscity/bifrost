@@ -12,11 +12,12 @@ const configureStore = async () => {
     const middlewares = [sagaMiddleware];
 
     let config = {
-        key: 'root',
+        key: 'bifrost',
         storage: AsyncStorage,
     };
 
-    const persistedReducer = persistReducer(config, rootReducer);
+    let persistedReducer = persistReducer(config, rootReducer)
+
     const createAppStore = applyMiddleware(...middlewares)(createStore);
 
     let appStore = createAppStore(persistedReducer);

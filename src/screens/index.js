@@ -1,6 +1,6 @@
 import {Navigation} from 'react-native-navigation';
-import Transitions from './Transitions';
+import Register from './Register';
 
 export function registerScreens(store, provider) {
-    Navigation.registerComponent('example.Transitions', () => Transitions, store, provider);
+    Navigation.registerComponent('example.Register', () => Register, store, provider);
 }

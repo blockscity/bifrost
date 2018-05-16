@@ -1,8 +1,12 @@
+import {createAction} from 'redux-actions';
+
+
 export function init() {
-    return async function (dispatch, state) {
-        dispatch({
-            type: "INIT",
-            root: state
-        });
+    return {
+        type: "INIT",
+        root: {}
     };
 }
+
+
+export const createIdentity = createAction("IDENTITY_CREATE");
