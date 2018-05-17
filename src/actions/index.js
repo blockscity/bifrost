@@ -1,3 +1,5 @@
+import {IDENTITY, KEYSTORE, SEED} from "./types";
+
 export const PROMISIFIED = '@bifrost/PROMISIFIED';
 
 export const REQUEST = 'REQUEST';
@@ -45,4 +47,6 @@ export const promisify = (type, payloadFormatter = f => f, metaProvider = f => f
     }, actions);
 };
 
-export const keystore = promisify("KEYSTORE");
+export const keystore = promisify(KEYSTORE);
+export const seed = promisify(SEED);
+export const identities = promisify(IDENTITY);

@@ -1,7 +1,7 @@
 import {take, call, put, race, takeEvery} from 'redux-saga/effects';
 import {PROMISIFIED} from "../actions";
 
-export function* promisifyHandler({ payload }) {
+export function* promisifiedHandler({ payload }) {
     const { request, defer, types } = payload;
     const { resolve, reject } = defer;
     const [ SUCCESS, FAILURE ] = types;
@@ -21,6 +21,6 @@ export function* promisifyHandler({ payload }) {
     }
 }
 
-export default function* actionsWatcherSaga() {
-    yield takeEvery(PROMISIFIED, promisifyHandler);
+export default function* promisified() {
+    yield takeEvery(PROMISIFIED, promisifiedHandler);
 }
