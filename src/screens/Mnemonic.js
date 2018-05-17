@@ -7,7 +7,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import * as actions from '../actions';
 import * as selectors from '../reducers/selectors'
 
-class Register extends React.Component {
+class Mnemonic extends React.Component {
     constructor(props) {
         super(props);
     }
@@ -45,4 +45,4 @@ function mapDispatchToProps(dispatch) {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Register);
+export default connect(mapStateToProps, mapDispatchToProps)(Mnemonic);

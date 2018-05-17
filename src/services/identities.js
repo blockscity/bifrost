@@ -1,15 +1,12 @@
 import Identities from "../contracts/Identities.json";
 import Config from "react-native-config/index";
-import Transaction from "ethereumjs-tx";
-import {Wallet} from "ethers";
-import {Alert} from "react-native";
 import {Promise} from 'bluebird';
+import axios from 'axios';
 
 export const identities = async ({keystore, derivedKey}) => {
     let Web3 = require('web3');
     let web3 = new Web3();
     web3.setProvider(new web3.providers.HttpProvider(Config.PROVIDER));
-    // console.log(keystore);
     try {
         let IdentitiesContract = web3.eth.contract(Identities.abi);
         let identities = IdentitiesContract.at(Config.IDENTITES_ADDR);
@@ -25,7 +22,15 @@ export const identities = async ({keystore, derivedKey}) => {
             gasLimit: web3.toHex(25000),
             gasPrice: web3.toHex(10e9),
         });
-        console.log(transaction);
+
+        let res = await axios.post(Config.GAS_STATION + "/refuels", {
+            transaction: transaction
+        });
+
+        Promise.promisify(identities.LogIdentityCreated)().then(e => {
+            console.log(e);
+        });
+
         return transaction;
     } catch (e) {
         throw e;

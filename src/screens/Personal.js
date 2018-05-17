@@ -6,7 +6,7 @@ import * as actions from '../actions';
 import * as selectors from '../reducers/selectors'
 
 
-class Register extends React.Component {
+class Personal extends React.Component {
     constructor(props) {
         super(props);
     }
@@ -43,4 +43,4 @@ function mapDispatchToProps(dispatch) {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Register);
+export default connect(mapStateToProps, mapDispatchToProps)(Personal);
