@@ -3,6 +3,7 @@ import {isEmpty} from 'lodash';
 import * as actions from '../actions';
 import {identity} from '../reducers/selectors'
 import {identities} from '../services';
+import promisify from './promisify';
 
 function* logger() {
     while (true) {
@@ -16,16 +17,21 @@ function* authentication() {
     function* signin(payload, meta) {
         const identi = yield select(identity);
         if (!identi || isEmpty(identi)) {
-            yield call(identities.createIdentity, payload.username, payload.password);
+            try {
+                let newVar = yield call(identities.createIdentity, payload.username, payload.password);
+                yield put(actions.identity.success(newVar));
+            } catch (e) {
+                yield put(actions.identity.failure(e));
+            }
         } else {
-            yield call(identities.createIdentity, payload.username, payload.password);
+            yield put(actions.identity.success({}));
         }
     }
 
     while (true) {
-        const {type, payload, meta} = yield take(["IDENTITY_CREATE"]);
+        const {type, payload, meta} = yield take([actions.identity.REQUEST]);
         switch (type) {
-            case "IDENTITY_CREATE":
+            case `IDENTITY_${actions.REQUEST}`:
                 yield fork(signin, payload, meta);
                 break;
             default:
@@ -40,5 +46,6 @@ export default function* () {
     yield [
         fork(logger),
         fork(authentication),
+        fork(promisify),
     ];
 }

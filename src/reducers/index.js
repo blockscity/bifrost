@@ -1,8 +1,9 @@
 import {combineReducers} from 'redux';
+import {REQUEST, SUCCESS, FAILURE} from '../actions';
 
 function getIdentity(state = {}, action) {
     switch (action.type) {
-        case "IDENTITY_CREATE":
+        case `IDENTITY_${SUCCESS}`:
             return {
                 "identity": "test"
             };

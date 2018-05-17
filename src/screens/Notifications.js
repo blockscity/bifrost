@@ -1,9 +1,10 @@
 import React from 'react';
 import {connect} from 'react-redux'
-import {StyleSheet, View} from 'react-native';
-import {Button} from 'react-native-elements';
+import {StyleSheet, ScrollView, Text, Alert} from 'react-native';
+import Row from '../components/Row';
 import * as actions from '../actions';
 import * as selectors from '../reducers/selectors'
+
 
 class Register extends React.Component {
     constructor(props) {
@@ -11,11 +12,12 @@ class Register extends React.Component {
     }
 
     render() {
-        const {createIdentity, createIdentity1} = this.props;
+        const {createIdentity, identity} = this.props;
         return (
-            <View style={styles.container}>
-                <Button title={'Register'} onPress={() => createIdentity1("sjkyspa", "password")}/>
-            </View>
+            <ScrollView style={styles.container}>
+                <Row title={'Register'} onPress={() => createIdentity("sjkyspa", "password")}/>
+                <Text>{JSON.stringify(identity)}</Text>
+            </ScrollView>
         );
     }
 }
@@ -23,9 +25,6 @@ class Register extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        alignContent: 'center'
     },
 });
 
@@ -40,11 +39,7 @@ function mapDispatchToProps(dispatch) {
         createIdentity: (username, password) => dispatch(actions.createIdentity({
             username: username,
             password: password
-        })),
-        createIdentity1: (username, password) => actions.identity({
-            username: username,
-            password: password
-        }, dispatch)
+        }))
     }
 }
 
