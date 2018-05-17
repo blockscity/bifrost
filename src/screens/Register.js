@@ -1,7 +1,9 @@
 import React from 'react';
 import {connect} from 'react-redux'
 import {StyleSheet, View} from 'react-native';
-import {Button} from 'react-native-elements';
+import {Button, Input} from 'react-native-elements';
+import Icon from 'react-native-vector-icons/FontAwesome';
+
 import * as actions from '../actions';
 import * as selectors from '../reducers/selectors'
 
@@ -11,10 +13,53 @@ class Register extends React.Component {
     }
 
     render() {
-        const {createIdentity, createIdentity1} = this.props;
+        const {createKeystore, password, confirmed} = this.props;
         return (
             <View style={styles.container}>
-                <Button title={'Register'} onPress={() => createIdentity1("sjkyspa", "password")}/>
+                <Input containerStyle={{marginVertical: 10}}
+                       leftIcon={
+                           <Icon
+                               name='lock'
+                               color='rgba(171, 189, 219, 1)'
+                               size={25}
+                           />
+                       }
+                       placeholder={"Password"}
+                       secureTextEntry={true}
+                       inputStyle={{marginLeft: 10}}
+                       keyboardAppearance="light"
+                       autoCapitalize="none"
+                       autoCorrect={false}
+                       keyboardType="default"
+                       returnKeyType="next"
+                       blurOnSubmit={true}
+                       placeholderTextColor="black"
+                       onChangeText={password => this.setState({password})}
+                       value={password}/>
+                <Input containerStyle={{marginVertical: 10}}
+                       leftIcon={
+                           <Icon
+                               name='lock'
+                               color='rgba(171, 189, 219, 1)'
+                               size={25}
+                           />
+                       }
+                       placeholder={"Confirm Password"}
+
+                       secureTextEntry={true}
+                       inputStyle={{marginLeft: 10}}
+                       keyboardAppearance="light"
+                       autoCapitalize="none"
+                       autoCorrect={false}
+                       keyboardType="default"
+                       returnKeyType="done"
+                       blurOnSubmit={true}
+                       placeholderTextColor="black"
+                       onChangeText={confirmed => this.setState({confirmed})}
+                       value={confirmed}/>
+                <Button title={'Register'}
+                        disabled={password !== confirmed && password.length < 8}
+                        onPress={() => createKeystore(this.state.password)}/>
             </View>
         );
     }
@@ -31,18 +76,13 @@ const styles = StyleSheet.create({
 
 function mapStateToProps(state) {
     return {
-        identity: selectors.identity(state)
+        keystore: selectors.keystore(state)
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        createIdentity: (username, password) => dispatch(actions.createIdentity({
-            username: username,
-            password: password
-        })),
-        createIdentity1: (username, password) => actions.identity({
-            username: username,
+        createKeystore: (password) => actions.keystore({
             password: password
         }, dispatch)
     }

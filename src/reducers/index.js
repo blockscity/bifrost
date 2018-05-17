@@ -1,19 +1,18 @@
 import {combineReducers} from 'redux';
 import {REQUEST, SUCCESS, FAILURE} from '../actions';
+import {KEYSTORE} from '../actions/types';
 
-function getIdentity(state = {}, action) {
+function keystore(state = {}, action) {
     switch (action.type) {
-        case `IDENTITY_${SUCCESS}`:
-            return {
-                "identity": "test"
-            };
+        case `${KEYSTORE}_${SUCCESS}`:
+            return Object.assign(state, JSON.parse(action.payload.serialize()));
         default:
             return state;
     }
 }
 
 const reducers = combineReducers({
-    identity: getIdentity
+    keystore: keystore
 });
 
 export default reducers

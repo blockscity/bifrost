@@ -1,8 +1,9 @@
 import {take, fork, select, call, put} from 'redux-saga/effects';
 import {isEmpty} from 'lodash';
 import * as actions from '../actions';
-import {identity} from '../reducers/selectors'
-import {identities} from '../services';
+import {KEYSTORE} from "../actions/types";
+import {keystore} from '../reducers/selectors'
+import {keystore as keystoreService} from '../services';
 import promisify from './promisify';
 
 function* logger() {
@@ -15,31 +16,33 @@ function* logger() {
 
 function* authentication() {
     function* signin(payload, meta) {
-        const identi = yield select(identity);
-        if (!identi || isEmpty(identi)) {
+        const ks = yield select(keystore);
+        if (!ks || isEmpty(ks)) {
             try {
-                let newVar = yield call(identities.createIdentity, payload.username, payload.password);
-                yield put(actions.identity.success(newVar));
+                let keystore = yield call(keystoreService.createKeystore, payload.password);
+                yield put(actions.keystore.success(keystore));
             } catch (e) {
-                yield put(actions.identity.failure(e));
+                yield put(actions.keystore.failure(e));
             }
         } else {
-            yield put(actions.identity.success({}));
+            yield put(actions.keystore.success(ks));
         }
     }
 
     while (true) {
-        const {type, payload, meta} = yield take([actions.identity.REQUEST]);
+        const {type, payload, meta} = yield take(ac => ac.type.startsWith(KEYSTORE));
         switch (type) {
-            case `IDENTITY_${actions.REQUEST}`:
+            case `${KEYSTORE}_${actions.REQUEST}`:
                 yield fork(signin, payload, meta);
+                break;
+            case `${KEYSTORE}_${actions.SUCCESS}`:
+                // yield fork(signin, payload, meta);
                 break;
             default:
                 continue;
         }
     }
 }
-
 
 
 export default function* () {

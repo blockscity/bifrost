@@ -1,10 +1,11 @@
 import React from 'react';
 import {connect} from 'react-redux'
-import {StyleSheet, ScrollView, Text, Alert} from 'react-native';
-import Row from '../components/Row';
+import {StyleSheet, View, Text} from 'react-native';
+import {Button, Input} from 'react-native-elements';
+import Icon from 'react-native-vector-icons/FontAwesome';
+
 import * as actions from '../actions';
 import * as selectors from '../reducers/selectors'
-
 
 class Register extends React.Component {
     constructor(props) {
@@ -12,12 +13,11 @@ class Register extends React.Component {
     }
 
     render() {
-        const {createIdentity, identity} = this.props;
+        const {createIdentity, password, confirmed} = this.props;
         return (
-            <ScrollView style={styles.container}>
-                <Row title={'Register'} onPress={() => createIdentity("sjkyspa", "password")}/>
-                <Text>{JSON.stringify(identity)}</Text>
-            </ScrollView>
+            <View style={styles.container}>
+               <Text></Text>
+            </View>
         );
     }
 }
@@ -25,21 +25,23 @@ class Register extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignContent: 'center'
     },
 });
 
 function mapStateToProps(state) {
     return {
-        identity: selectors.keystore(state)
+        keystore: selectors.keystore(state)
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        createKeystore: (username, password) => dispatch(actions.createIdentity({
-            username: username,
+        createKeystore: (password) => actions.keystore({
             password: password
-        }))
+        }, dispatch)
     }
 }
 

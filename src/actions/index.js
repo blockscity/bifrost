@@ -1,5 +1,3 @@
-import {createAction} from 'redux-actions';
-
 export const PROMISIFIED = '@bifrost/PROMISIFIED';
 
 export const REQUEST = 'REQUEST';
@@ -13,9 +11,6 @@ export function init() {
         root: {}
     };
 }
-
-
-export const createIdentity = createAction("IDENTITY_CREATE");
 
 
 export const promisify = (type, payloadFormatter = f => f, metaProvider = f => f) => {
@@ -50,4 +45,4 @@ export const promisify = (type, payloadFormatter = f => f, metaProvider = f => f
     }, actions);
 };
 
-export const identity = promisify("IDENTITY");
+export const keystore = promisify("KEYSTORE");

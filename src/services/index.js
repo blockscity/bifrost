@@ -1,3 +1,3 @@
-import * as identities from './identities'
+import * as keystore from './keystore'
 
-export {identities}
+export {keystore}

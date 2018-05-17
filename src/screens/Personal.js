@@ -30,13 +30,13 @@ const styles = StyleSheet.create({
 
 function mapStateToProps(state) {
     return {
-        identity: selectors.identity(state)
+        identity: selectors.keystore(state)
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        createIdentity: (username, password) => dispatch(actions.createIdentity({
+        createKeystore: (username, password) => dispatch(actions.createIdentity({
             username: username,
             password: password
         }))
