@@ -6,8 +6,9 @@ import axios from 'axios';
 export const identities = async ({keystore, derivedKey}) => {
     let Web3 = require('web3');
     let web3 = new Web3();
-    web3.setProvider(new web3.providers.HttpProvider(Config.PROVIDER));
+
     try {
+        web3.setProvider(new web3.providers.HttpProvider(Config.PROVIDER));
         let IdentitiesContract = web3.eth.contract(Identities.abi);
         let identities = IdentitiesContract.at(Config.IDENTITES_ADDR);
         let address = keystore.getAddresses()[0];
@@ -23,13 +24,17 @@ export const identities = async ({keystore, derivedKey}) => {
             gasPrice: web3.toHex(10e9),
         });
 
-        let res = await axios.post(Config.GAS_STATION + "/refuels", {
-            transaction: transaction
-        });
+        // let res = await axios.post(Config.GAS_STATION + "/refuels", {
+        //     transaction: transaction
+        // }, {
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //     }
+        // });
 
-        Promise.promisify(identities.LogIdentityCreated)().then(e => {
-            console.log(e);
-        });
+        // await Promise.promisify(identities.LogIdentityCreated)().then(e => {
+        //     console.log(e);
+        // });
 
         return transaction;
     } catch (e) {

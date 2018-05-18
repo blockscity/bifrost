@@ -1,8 +1,3 @@
-import Identities from "../contracts/Identities.json";
-import Config from "react-native-config/index";
-import Transaction from "ethereumjs-tx";
-import {Wallet} from "ethers";
-import {Alert} from "react-native";
 import {keystore} from 'eth-lightwallet';
 
 

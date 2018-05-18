@@ -1,4 +1,4 @@
-import {take, fork, select, call, put} from 'redux-saga/effects';
+import {take, fork, select, call, put, all} from 'redux-saga/effects';
 import {isEmpty} from 'lodash';
 import * as actions from '../actions';
 import {KEYSTORE, IDENTITY} from "../actions/types";
@@ -6,6 +6,8 @@ import {keystore} from '../reducers/selectors'
 import {keystore as keystoreService, identities as identityService} from '../services';
 import promisified from './promisified';
 import Promise from 'bluebird';
+import {Navigation} from "react-native-navigation";
+import {Platform, View, Alert} from 'react-native';
 
 function* logger() {
     while (true) {
@@ -47,7 +49,6 @@ function* keystoreSaga() {
                 yield fork(signin, payload, meta);
                 break;
             case `${KEYSTORE}_${actions.SUCCESS}`:
-                // yield fork(signin, payload, meta);
                 break;
             default:
                 continue;
@@ -60,23 +61,85 @@ function* identitiesSaga() {
         const {type, payload, meta} = yield take(ac => ac.type.startsWith(IDENTITY));
         switch (type) {
             case `${IDENTITY}_${actions.REQUEST}`:
-                let newVar = yield fork(identityService.identities, payload, meta);
+                let newVar = yield call(identityService.identities, payload, meta);
+                yield put(actions.identities.success({aa: newVar}));
                 break;
             case `${IDENTITY}_${actions.SUCCESS}`:
-                // yield fork(signin, payload, meta);
+                yield put(actions.started());
                 break;
             default:
-                continue;
+        }
+    }
+}
+
+function* navigationSaga() {
+    while (true) {
+        const {type} = yield take(ac => ac.type.startsWith("START"));
+        switch (type) {
+            case "STARTUP":
+                try {
+                    yield call(Navigation.startSingleScreenApp, {
+                        screen: {
+                            screen: 'bifrost.Register',
+                            title: 'Welcome',
+                            navigatorStyle: {},
+                            navigatorButtons: {}
+                        },
+                    });
+                } catch (e) {
+
+                }
+                break;
+            case "STARTED":
+                const tabs = [{
+                    label: 'Personal',
+                    screen: 'bifrost.Personal',
+                    icon: require('../imgs/swap.png'),
+                    title: 'Personal',
+                }, {
+                    label: 'Notifications',
+                    screen: 'bifrost.Notifications',
+                    icon: require('../imgs/swap.png'),
+                    title: 'Notifications',
+                }];
+                try {
+                    yield call(Navigation.startTabBasedApp, {
+                        tabs,
+                        animationType: Platform.OS === 'ios' ? 'slide-down' : 'fade',
+                        tabsStyle: {
+                            tabBarBackgroundColor: '#003a66',
+                            tabBarButtonColor: '#ffffff',
+                            tabBarSelectedButtonColor: '#ff505c',
+                            tabFontFamily: 'BioRhyme-Bold',
+                        },
+                        appStyle: {
+                            tabBarBackgroundColor: '#003a66',
+                            navBarButtonColor: '#ffffff',
+                            tabBarButtonColor: '#ffffff',
+                            navBarTextColor: '#ffffff',
+                            tabBarSelectedButtonColor: '#ff505c',
+                            navigationBarColor: '#003a66',
+                            navBarBackgroundColor: '#003a66',
+                            statusBarColor: '#002b4c',
+                            tabFontFamily: 'BioRhyme-Bold',
+                        }
+                    });
+                } catch (e) {
+
+                }
+                break;
+            default:
         }
     }
 }
 
 
 export default function* () {
-    yield [
+    yield all([
         fork(logger),
         fork(keystoreSaga),
         fork(identitiesSaga),
+        fork(navigationSaga),
         fork(promisified),
-    ];
+    ]);
 }

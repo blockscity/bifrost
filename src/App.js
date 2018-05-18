@@ -1,6 +1,4 @@
 import React from 'react';
-import {Platform, View, Alert} from 'react-native';
-import {Navigation} from 'react-native-navigation';
 import {Provider} from "react-redux";
 import {registerScreens} from './screens';
 import {configureStore} from './store';
@@ -21,45 +19,5 @@ configureStore().then(store => {
         title: 'Notifications',
     }];
 
-    store.subscribe(() => {
-        let {keystore} = store.getState();
-        if (isNil(keystore) || isEmpty(keystore)) {
-            Navigation.startSingleScreenApp({
-                screen: {
-                    screen: 'bifrost.Register',
-                    title: 'Welcome',
-                    navigatorStyle: {},
-                    navigatorButtons: {}
-                },
-            });
-        } else {
-            if (this.currentKs !== keystore) {
-                this.currentKs = keystore;
-                Navigation.startTabBasedApp({
-                    tabs,
-                    animationType: Platform.OS === 'ios' ? 'slide-down' : 'fade',
-                    tabsStyle: {
-                        tabBarBackgroundColor: '#003a66',
-                        tabBarButtonColor: '#ffffff',
-                        tabBarSelectedButtonColor: '#ff505c',
-                        tabFontFamily: 'BioRhyme-Bold',
-                    },
-                    appStyle: {
-                        tabBarBackgroundColor: '#003a66',
-                        navBarButtonColor: '#ffffff',
-                        tabBarButtonColor: '#ffffff',
-                        navBarTextColor: '#ffffff',
-                        tabBarSelectedButtonColor: '#ff505c',
-                        navigationBarColor: '#003a66',
-                        navBarBackgroundColor: '#003a66',
-                        statusBarColor: '#002b4c',
-                        tabFontFamily: 'BioRhyme-Bold',
-                    }
-                });
-            }
-
-        }
-    });
-
-    store.dispatch(actions.init());
+    store.dispatch(actions.startup());
 });

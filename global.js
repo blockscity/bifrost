@@ -6,3 +6,11 @@ global.process.env.NODE_ENV = __DEV__ ? 'development' : 'production';
 global.location = {
     protocol: 'file:',
 };
+
+global.crypto = {
+    getRandomValues(byteArray) {
+        for (let i = 0; i < byteArray.length; i++) {
+            byteArray[i] = Math.floor(256 * Math.random());
+        }
+    },
+};

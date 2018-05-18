@@ -82,9 +82,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        createKeystore: (password) => actions.keystore({
-            password: password
-        }, dispatch)
+        createKeystore: (password) => dispatch(actions.keystore.request({password: password}))
     }
 }
 

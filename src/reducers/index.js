@@ -12,7 +12,7 @@ function keystore(state = {}, action) {
 }
 
 const reducers = combineReducers({
-    keystore: keystore
+    keystore
 });
 
 export default reducers

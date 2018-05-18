@@ -7,10 +7,16 @@ export const SUCCESS = 'SUCCESS';
 export const FAILURE = 'FAILURE';
 
 
-export function init() {
+export function startup() {
     return {
-        type: "INIT",
-        root: {}
+        type: "STARTUP",
+    };
+}
+
+
+export function started() {
+    return {
+        type: "STARTED",
     };
 }
 

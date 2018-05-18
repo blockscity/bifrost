@@ -2,9 +2,10 @@
 import {applyMiddleware, createStore} from 'redux'
 import createSagaMiddleware, {END} from 'redux-saga';
 import {persistReducer, persistStore} from 'redux-persist'
-import {AsyncStorage} from "react-native";
+import storage from 'redux-persist/lib/storage'
 import rootReducer from '../reducers';
 import sagas from '../sagas';
+import autoMergeLevel2 from 'redux-persist/es/stateReconciler/autoMergeLevel2';
 
 
 const configureStore = async () => {
@@ -13,10 +14,11 @@ const configureStore = async () => {
 
     let config = {
         key: 'bifrost',
-        storage: AsyncStorage,
+        storage: storage,
+        stateReconciler: autoMergeLevel2
     };
 
-    let persistedReducer = persistReducer(config, rootReducer)
+    let persistedReducer = persistReducer(config, rootReducer);
 
     const createAppStore = applyMiddleware(...middlewares)(createStore);
 

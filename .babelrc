@@ -8,6 +8,7 @@
       "module-resolver",
       {
         "alias": {
+          "brorand": "brorand-shim",
           "stream": "readable-stream",
           "crypto": "react-native-crypto",
           "vm": "vm-browserify"
