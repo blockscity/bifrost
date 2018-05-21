@@ -1,7 +1,7 @@
 import {take, fork, select, call, put, all} from 'redux-saga/effects';
 import {isEmpty} from 'lodash';
 import * as actions from '../actions';
-import {KEYSTORE, IDENTITY} from "../actions/types";
+import {INITIALIZE, KEYSTORE, IDENTITY, SEED} from "../actions/types";
 import {REQUEST, SUCCESS, FAILURE} from "../actions";
 import {keystore} from '../reducers/selectors'
 import {keystore as keystoreService, identities as identityService} from '../services';
@@ -67,7 +67,9 @@ function* successSaga() {
         const {type, payload, meta} = yield take(ac => ac.type.endsWith(SUCCESS));
         switch (type) {
             case `${IDENTITY}_${SUCCESS}`:
-                yield put(actions.started());
+                // call the ipfs save the identity and the pub key
+                // call the ethereum and save the ipfs key
+                yield put(actions.initialize.success());
                 break;
             case `${KEYSTORE}_${actions.SUCCESS}`:
                 let keystore = payload.keystore;
@@ -94,9 +96,9 @@ function* failureSaga() {
 
 function* navigationSaga() {
     while (true) {
-        const {type} = yield take(ac => ac.type.startsWith("START"));
+        const {type} = yield take(ac => ac.type.startsWith(INITIALIZE));
         switch (type) {
-            case "STARTUP":
+            case `${INITIALIZE}_${REQUEST}`:
                 try {
                     yield fork(Navigation.startSingleScreenApp, {
                         screen: {
@@ -107,10 +109,10 @@ function* navigationSaga() {
                         },
                     });
                 } catch (e) {
-                    console.log(e, "error for startupd")
+                    console.log(e, "error initialize")
                 }
                 break;
-            case "STARTED":
+            case `${INITIALIZE}_${SUCCESS}`:
                 const tabs = [{
                     label: 'Personal',
                     screen: 'bifrost.Personal',

@@ -6,5 +6,5 @@ import * as actions from './actions';
 
 configureStore().then(store => {
     registerScreens(store, Provider);
-    store.dispatch(actions.startup());
+    store.dispatch(actions.initialize.request());
 });
