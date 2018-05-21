@@ -2,6 +2,7 @@ import Identities from "../contracts/Identities.json";
 import Config from "react-native-config/index";
 import {Promise} from 'bluebird';
 import axios from 'axios';
+import {keystore} from "eth-lightwallet";
 
 export const identities = async ({keystore, derivedKey}) => {
     let Web3 = require('web3');
@@ -13,16 +14,16 @@ export const identities = async ({keystore, derivedKey}) => {
         let identities = IdentitiesContract.at(Config.IDENTITES_ADDR);
         let address = keystore.getAddresses()[0];
         let data = identities.createIdentity.getData(address, address);
-
-        let gas = await Promise.promisify(identities.createIdentity.estimateGas)(address, address);
-        let transaction = await Promise.promisify(keystore.signTransaction, {context: keystore})({
-            from: address,
-            to: Config.IDENTITES_ADDR,
-            gas: gas,
-            data: data,
-            gasLimit: web3.toHex(25000),
-            gasPrice: web3.toHex(10e9),
-        });
+        //
+        // let gas = await Promise.promisify(identities.createIdentity.estimateGas)(address, address);
+        // let transaction = await Promise.promisify(keystore.signTransaction, {context: keystore})({
+        //     from: address,
+        //     to: Config.IDENTITES_ADDR,
+        //     gas: gas,
+        //     data: data,
+        //     gasLimit: web3.toHex(25000),
+        //     gasPrice: web3.toHex(10e9),
+        // });
 
         // let res = await axios.post(Config.GAS_STATION + "/refuels", {
         //     transaction: transaction
@@ -36,8 +37,9 @@ export const identities = async ({keystore, derivedKey}) => {
         //     console.log(e);
         // });
 
-        return transaction;
+        return {aa:"aa"};
     } catch (e) {
+        console.error(e);
         throw e;
     }
 };

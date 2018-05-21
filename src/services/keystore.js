@@ -35,7 +35,8 @@ export const create = (password) => {
 export const rehydrate = (serialized) => {
     return new Promise((resolve, reject) => {
         try {
-            return keystore.deserialize(serialized);
+            let deserialize = keystore.deserialize(serialized);
+            resolve(deserialize);
         } catch (e) {
             reject(e);
         }

@@ -14,6 +14,7 @@
     "babel-plugin-module-resolver": "^3.1.1",
     "bluebird": "^3.5.1",
     "buffer": "^5.1.0",
+    "crypto": "^1.0.1",
     "eth-lightwallet": "^3.0.1",
     "ethereumjs-tx": "^1.3.4",
     "ethereumjs-util": "^5.2.0",
@@ -36,8 +37,7 @@
     "redux-saga": "^0.16.0",
     "url": "^0.11.0",
     "vm-browserify": "^1.0.1",
-    "web3": "^0.20.6",
-    "brorand-shim": "https://github.com/HoardInvest/brorand"
+    "web3": "^0.20.6"
   },
   "devDependencies": {
     "babel-jest": "22.4.3",

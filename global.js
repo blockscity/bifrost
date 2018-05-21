@@ -7,10 +7,17 @@ global.location = {
     protocol: 'file:',
 };
 
-global.crypto = {
-    getRandomValues(byteArray) {
-        for (let i = 0; i < byteArray.length; i++) {
-            byteArray[i] = Math.floor(256 * Math.random());
-        }
-    },
-};
+// global.crypto = {
+//     getRandomValues(byteArray) {
+//         for (let i = 0; i < byteArray.length; i++) {
+//             byteArray[i] = Math.floor(256 * Math.random());
+//         }
+//     },
+// };
+
+global.crypto = require('crypto');
+global.crypto.getRandomValues = function(byteArray) {
+    for (let i = 0; i < byteArray.length; i++) {
+        byteArray[i] = Math.floor(256 * Math.random());
+    }
+}
