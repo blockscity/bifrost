@@ -8,8 +8,17 @@
       "module-resolver",
       {
         "alias": {
-          "brorand": "brorand",
-          "stream": "readable-stream",
+          "os": "os-browserify/browser",
+          "http": "react-native-http",
+          "https": "https-browserify",
+          "path": "path-browserify",
+          "constants": "constants-browserify",
+          "stream": "stream-browserify",
+          "_stream_duplex": "readable-stream/duplex",
+          "_stream_passthrough": "readable-stream/passthrough",
+          "_stream_readable": "readable-stream/readable",
+          "_stream_transform": "readable-stream/transform",
+          "_stream_writable": "readable-stream/writable",
           "crypto": "react-native-crypto",
           "vm": "vm-browserify"
         }

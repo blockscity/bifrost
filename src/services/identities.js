@@ -25,7 +25,7 @@ export const identities = async ({keystore, derivedKey}) => {
         //     gasPrice: web3.toHex(10e9),
         // });
 
-        // let res = await axios.post(Config.GAS_STATION + "/refuels", {
+        // let res = await axios.post(Config.FUELLING + "/refuels", {
         //     transaction: transaction
         // }, {
         //     headers: {
@@ -37,7 +37,11 @@ export const identities = async ({keystore, derivedKey}) => {
         //     console.log(e);
         // });
 
-        return {aa:"aa"};
+        return {
+            id: "id",
+            owner: "owner",
+            recover: "recover_key"
+        };
     } catch (e) {
         console.error(e);
         throw e;
