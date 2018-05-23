@@ -42,37 +42,51 @@ function* requestSagas() {
     }
 
     function* identityHandler(payload, meta) {
-        try {
-            let identity = yield call(identityService.identities, payload, meta);
+        const identity = yield select(state => state.identity);
+        if (!identity || isEmpty(identity)){
+            try {
+                let identity = yield call(identityService.identities, payload, meta);
+                yield put(actions.identities.success({
+                    identity: identity
+                }));
+            } catch (e) {
+                yield put(actions.identities.failure({
+                    errors: [
+                        {
+                            detail: e.toString()
+                        }
+                    ]
+                }));
+            }
+        } else {
             yield put(actions.identities.success({
                 identity: identity
             }));
-        } catch (e) {
-            yield put(actions.identities.failure({
-                errors: [
-                    {
-                        detail: e.toString()
-                    }
-                ]
-            }));
         }
+
     }
 
     function* ipfsHandler(payload, meta) {
-        try {
-            let hash = yield call(ipfsService.upload, payload, meta);
-            yield put(actions.ipfsUpload.success({
-                hash: hash
-            }));
-        } catch (e) {
-            yield put(actions.ipfsUpload.failure({
-                errors: [
+        const ipfs = yield select(state => state.ipfs);
+        if (!ipfs || isEmpty(ipfs)) {
+            try {
+                let result = yield call(ipfsService.upload, payload, meta);
+                yield put(actions.ipfsUpload.success({ipfs: result}));
+            } catch (e) {
+                yield put(actions.ipfsUpload.failure(
                     {
-                        detail: e.toString()
-                    }
-                ]
-            }));
+                        errors: [
+                            {
+                                detail: e.toString()
+                            }
+                        ]
+                    })
+                );
+            }
+        } else {
+            yield put(actions.ipfsUpload.success({ipfs: ipfs}));
         }
+
     }
 
     while (true) {
