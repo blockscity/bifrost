@@ -1,6 +1,6 @@
 import {combineReducers} from 'redux';
 import {REQUEST, SUCCESS, FAILURE} from '../actions';
-import {IDENTITY, IPFS_UPLOAD, KEYSTORE} from '../actions/types';
+import {IDENTITY, IPFS_UPLOAD, KEYSTORE, CLAIMS} from '../actions/types';
 
 function keystore(state = {}, action) {
     switch (action.type) {
@@ -29,8 +29,20 @@ function ipfs(state = {}, action) {
     }
 }
 
+function claims(state = [], action) {
+    switch (action.type) {
+        case `${CLAIMS.SET}_${SUCCESS}`:
+            return [...state, {claim: action.payload.claim}];
+        default:
+            return state;
+    }
+}
+
 const reducers = combineReducers({
-    keystore, identity, ipfs
+    keystore,
+    identity,
+    ipfs,
+    claims
 });
 
 export default reducers

@@ -1,10 +1,15 @@
 import {take, fork, select, call, put, all} from 'redux-saga/effects';
 import {isEmpty} from 'lodash';
 import * as actions from '../actions';
-import {INITIALIZE, KEYSTORE, IDENTITY, IPFS_UPLOAD, SEED} from "../actions/types";
+import {INITIALIZE, KEYSTORE, IDENTITY, IPFS_UPLOAD, SEED, CLAIMS} from "../actions/types";
 import {REQUEST, SUCCESS, FAILURE} from "../actions";
 import {keystore} from '../reducers/selectors'
-import {keystore as keystoreService, identities as identityService, ipfs as ipfsService} from '../services';
+import {
+    keystore as keystoreService,
+    identities as identityService,
+    ipfs as ipfsService,
+    claims as claimsService
+} from '../services';
 import promisified from './promisified';
 import Promise from 'bluebird';
 import {Navigation} from "react-native-navigation";
@@ -43,7 +48,7 @@ function* requestSagas() {
 
     function* identityHandler(payload, meta) {
         const identity = yield select(state => state.identity);
-        if (!identity || isEmpty(identity)){
+        if (!identity || isEmpty(identity)) {
             try {
                 let identity = yield call(identityService.identities, payload, meta);
                 yield put(actions.identities.success({
@@ -89,6 +94,28 @@ function* requestSagas() {
 
     }
 
+    function* claimsHandler(payload, meta) {
+        const claims = yield select(state => state.claims);
+        if (!claims || isEmpty(claims)) {
+            try {
+                let result = yield call(claimsService.set, payload, meta);
+                yield put(actions.claims.set.success({claim: result}));
+            } catch (e) {
+                yield put(actions.claims.set.failure(
+                    {
+                        errors: [
+                            {
+                                detail: e.toString()
+                            }
+                        ]
+                    })
+                );
+            }
+        } else {
+            yield put(actions.claims.set.success({claim: result}));
+        }
+    }
+
     while (true) {
         const {type, payload, meta} = yield take(ac => ac.type.endsWith(REQUEST));
         switch (type) {
@@ -100,6 +127,9 @@ function* requestSagas() {
                 break;
             case `${IPFS_UPLOAD}_${REQUEST}`:
                 yield fork(ipfsHandler, payload, meta);
+                break;
+            case `${CLAIMS.SET}_${REQUEST}`:
+                yield fork(claimsHandler, payload, meta);
                 break;
             default:
         }
@@ -131,7 +161,7 @@ function* successSaga() {
                 // call the ethereum and save the ipfs key
                 yield put(actions.initialize.success());
                 break;
-            case `${KEYSTORE}_${actions.SUCCESS}`:
+            case `${KEYSTORE}_${SUCCESS}`:
                 let keystore = payload.keystore;
                 keystore.passwordProvider = function (callback) {
                     callback(null, '111');
@@ -139,8 +169,11 @@ function* successSaga() {
                 let derivedKey = yield call(Promise.promisify(keystore.keyFromPassword, {context: keystore}), '111');
                 yield put(actions.identities.request({keystore: keystore, derivedKey: derivedKey}));
                 break;
-            case `${IPFS_UPLOAD}_${actions.SUCCESS}`:
+            case `${IPFS_UPLOAD}_${SUCCESS}`:
                 //todo: should call the claims and save the hash
+                yield put(actions.claims.set.request({
+                    ipfs: payload.ipfs
+                }));
                 break;
             default:
         }
