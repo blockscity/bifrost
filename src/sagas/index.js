@@ -32,7 +32,6 @@ function* requestSagas() {
                     callback(null, payload.password);
                 };
                 yield put(actions.keystore.success({keystore: created}));
-                yield put(actions.identities.request({keystore: created, derivedKey: derivedKey}));
             } catch (e) {
                 yield put(actions.keystore.failure(e));
             }
