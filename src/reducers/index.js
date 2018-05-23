@@ -1,6 +1,6 @@
 import {combineReducers} from 'redux';
 import {REQUEST, SUCCESS, FAILURE} from '../actions';
-import {IDENTITY, IPFS_UPLOAD, KEYSTORE, CLAIMS} from '../actions/types';
+import {IDENTITY, IPFS, KEYSTORE, CLAIMS} from '../actions/types';
 
 function keystore(state = {}, action) {
     switch (action.type) {
@@ -22,7 +22,7 @@ function identity(state = {}, action) {
 
 function ipfs(state = {}, action) {
     switch (action.type) {
-        case `${IPFS_UPLOAD}_${SUCCESS}`:
+        case `${IPFS.UPLOAD}_${SUCCESS}`:
             return Object.assign(state, {ipfs: action.payload.ipfs});
         default:
             return state;
