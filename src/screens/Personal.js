@@ -3,6 +3,8 @@ import {connect} from 'react-redux'
 import {StyleSheet, ScrollView, Text, Alert} from 'react-native';
 import Row from '../components/Row';
 import * as actions from '../actions';
+import { PURGE } from 'redux-persist';
+import { purgeStoredState } from 'redux-persist'
 import * as selectors from '../reducers/selectors'
 
 
@@ -12,11 +14,10 @@ class Personal extends React.Component {
     }
 
     render() {
-        const {createIdentity, identity} = this.props;
+        const {clean, identity} = this.props;
         return (
             <ScrollView style={styles.container}>
-                <Row title={'Register'} onPress={() => createIdentity("sjkyspa", "password")}/>
-                <Text>{JSON.stringify(identity)}</Text>
+                <Row title={'Clean'} onPress={() => clean()}/>
             </ScrollView>
         );
     }
@@ -36,10 +37,11 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        createKeystore: (username, password) => dispatch(actions.createIdentity({
-            username: username,
-            password: password
-        }))
+        clean: () => dispatch({
+            type: PURGE,
+            key: "root",
+            result: () => null
+        })
     }
 }
 

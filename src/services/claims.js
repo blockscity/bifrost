@@ -11,7 +11,6 @@ export const set = async (keystore, ipfs) => {
     let Web3 = require('web3');
     let web3 = new Web3();
     web3.setProvider(new web3.providers.HttpProvider(Config.PROVIDER));
-    console.log("CONFIG", Config);
 
     let IdentitiesContract = web3.eth.contract(Identities.abi);
 
