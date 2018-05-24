@@ -95,17 +95,25 @@ function* requestSagas() {
 
     function* claimsHandler(payload, meta) {
         const claims = yield select(state => state.claims);
+        let ks = yield select(selectors.keystore);
+        ks.passwordProvider = function (callback) {
+            callback(null, '111');
+        };
+        const {ipfs} = payload;
         // todo: should check whether the key is existed
         if (!claims || isEmpty(claims)) {
             try {
-                let result = yield call(claimsService.set, payload, meta);
+
+                let result = yield call(claimsService.set, ks, ipfs);
+                console.log(result);
                 yield put(actions.claims.set.success({claim: result}));
             } catch (e) {
+                console.error(e);
                 yield put(actions.claims.set.failure(
                     {
                         errors: [
                             {
-                                detail: e.toString()
+                                detail: e
                             }
                         ]
                     })
