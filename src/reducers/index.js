@@ -5,7 +5,7 @@ import {IDENTITY, IPFS, KEYSTORE, CLAIMS} from '../actions/types';
 function keystore(state = {}, action) {
     switch (action.type) {
         case `${KEYSTORE}_${SUCCESS}`:
-            return Object.assign(state, JSON.parse(action.payload.keystore.serialize()));
+            return Object.assign(state, {serialized: action.payload.keystore.serialize()});
         default:
             return state;
     }

@@ -3,7 +3,7 @@ import {isEmpty} from 'lodash';
 import * as actions from '../actions';
 import {INITIALIZE, KEYSTORE, IDENTITY, IPFS, SEED, CLAIMS} from "../actions/types";
 import {REQUEST, SUCCESS, FAILURE} from "../actions";
-import {keystore} from '../reducers/selectors'
+import * as selectors from '../reducers/selectors';
 import {
     keystore as keystoreService,
     identities as identityService,
@@ -25,7 +25,7 @@ function* logger() {
 
 function* requestSagas() {
     function* keystoreHandler(payload, meta) {
-        const ks = yield select(keystore);
+        const ks = yield select(selectors.keystore);
 
         if (!ks || isEmpty(ks)) {
             try {
@@ -41,8 +41,7 @@ function* requestSagas() {
                 yield put(actions.keystore.failure(e));
             }
         } else {
-            let rehydrated = yield call(keystoreService.rehydrate, JSON.stringify(ks));
-            yield put(actions.keystore.success({keystore: rehydrated}));
+            yield put(actions.keystore.success({keystore: ks}));
         }
     }
 
@@ -65,7 +64,7 @@ function* requestSagas() {
             }
         } else {
             yield put(actions.identities.success({
-                identity: identity
+                identity: {...identity}
             }));
         }
 
@@ -133,6 +132,25 @@ function* requestSagas() {
             case `${CLAIMS.SET}_${REQUEST}`:
                 yield fork(claimsHandler, payload, meta);
                 break;
+            case `${INITIALIZE}_${REQUEST}`:
+                let ks = yield select(selectors.keystore);
+                if (ks && !isEmpty(ks)) {
+                    yield put(actions.initialize.success());
+                } else {
+                    try {
+                        yield fork(Navigation.startSingleScreenApp, {
+                            screen: {
+                                screen: 'bifrost.Register',
+                                title: 'Welcome',
+                                navigatorStyle: {},
+                                navigatorButtons: {}
+                            },
+                        });
+                    } catch (e) {
+                        console.log(e, "error initialize")
+                    }
+                }
+                break;
             default:
         }
     }
@@ -177,39 +195,6 @@ function* successSaga() {
                     ipfs: payload.ipfs
                 }));
                 break;
-            default:
-        }
-    }
-}
-
-function* failureSaga() {
-    while (true) {
-        const {type, payload, meta} = yield take(ac => ac.type.endsWith(FAILURE));
-        switch (type) {
-            default:
-                console.error("failure", type, payload);
-        }
-    }
-}
-
-function* navigationSaga() {
-    while (true) {
-        const {type} = yield take(ac => ac.type.startsWith(INITIALIZE));
-        switch (type) {
-            case `${INITIALIZE}_${REQUEST}`:
-                try {
-                    yield fork(Navigation.startSingleScreenApp, {
-                        screen: {
-                            screen: 'bifrost.Register',
-                            title: 'Welcome',
-                            navigatorStyle: {},
-                            navigatorButtons: {}
-                        },
-                    });
-                } catch (e) {
-                    console.log(e, "error initialize")
-                }
-                break;
             case `${INITIALIZE}_${SUCCESS}`:
                 const tabs = [{
                     label: 'Personal',
@@ -253,6 +238,15 @@ function* navigationSaga() {
     }
 }
 
+function* failureSaga() {
+    while (true) {
+        const {type, payload, meta} = yield take(ac => ac.type.endsWith(FAILURE));
+        switch (type) {
+            default:
+                console.error("failure", type, payload);
+        }
+    }
+}
 
 export default function* () {
     yield all([
@@ -260,7 +254,6 @@ export default function* () {
         fork(requestSagas),
         fork(successSaga),
         fork(failureSaga),
-        fork(navigationSaga),
         fork(promisified),
     ]);
 }
