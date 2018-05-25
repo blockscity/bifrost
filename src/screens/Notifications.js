@@ -1,7 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux'
 import {StyleSheet, View, ScrollView} from 'react-native';
-import {ListItem, Avatar, Card, Text, Button, Icon} from 'react-native-elements'
+import {Text, Button, Card} from 'react-native-elements'
 import * as actions from '../actions';
 import * as selectors from '../reducers/selectors'
 
@@ -25,7 +25,7 @@ class Notification extends React.Component {
                             backgroundColor='#03A9F4'
                             fontFamily='Lato'
                             buttonStyle={{borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0}}
-                            title='VIEW NOW' />
+                            title='VIEW NOW'/>
                     </Card>
                     <Card
                         title='MEDICAL HISTORY REQUEST'>
@@ -36,7 +36,7 @@ class Notification extends React.Component {
                             backgroundColor='#03A9F4'
                             fontFamily='Lato'
                             buttonStyle={{borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0}}
-                            title='VIEW NOW' />
+                            title='VIEW NOW'/>
                     </Card>
                     <Card
                         title='MEDICAL HISTORY REQUEST'>
@@ -47,7 +47,7 @@ class Notification extends React.Component {
                             backgroundColor='#03A9F4'
                             fontFamily='Lato'
                             buttonStyle={{borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0}}
-                            title='VIEW NOW' />
+                            title='VIEW NOW'/>
                     </Card>
                     <Card
                         title='MEDICAL HISTORY REQUEST'>
@@ -58,7 +58,7 @@ class Notification extends React.Component {
                             backgroundColor='#03A9F4'
                             fontFamily='Lato'
                             buttonStyle={{borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0}}
-                            title='VIEW NOW' />
+                            title='VIEW NOW'/>
                     </Card>
                 </ScrollView>
             </View>
@@ -83,8 +83,7 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-    return {
-    }
+    return {}
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Notification);

@@ -1,11 +1,12 @@
 import React from 'react';
 import {connect} from 'react-redux'
 import {StyleSheet, View, ScrollView} from 'react-native';
-import {ListItem, Avatar, Icon, Card} from 'react-native-elements'
+import {ListItem, Avatar, Icon} from 'react-native-elements'
 import {PURGE} from "redux-persist";
 
+import {Card} from '../components/Card';
 
-class Profile extends React.Component {
+class Settings extends React.Component {
     constructor(props) {
         super(props);
     }
@@ -15,21 +16,22 @@ class Profile extends React.Component {
         return (
             <View style={styles.container}>
                 <ScrollView>
-                    <View style={styles.card}>
+                    <Card>
                         <ListItem
                             key={"profile"}
                             title={"Account Security"}
                             chevron
                             chevronColor={"#B5B5B5"}
                         />
-                    </View>
+                    </Card>
 
-                    <View style={styles.card}>
+                    <Card>
                         <ListItem
                             key={"help"}
                             title={"Help & Feedback"}
                             chevron
                             chevronColor={"#B5B5B5"}
+                            bottomDivider={true}
                         />
                         <ListItem
                             key={"about"}
@@ -37,9 +39,9 @@ class Profile extends React.Component {
                             chevron
                             chevronColor={"#B5B5B5"}
                         />
-                    </View>
+                    </Card>
 
-                    <View style={styles.card}>
+                    <Card>
                         <ListItem
                             key={"logout"}
                             title={"Logout"}
@@ -51,7 +53,7 @@ class Profile extends React.Component {
                                 });
                             }}
                         />
-                    </View>
+                    </Card>
                 </ScrollView>
             </View>
         );
@@ -62,12 +64,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "#F0F0F0"
-    },
-    card: {
-        paddingTop: 10,
-        paddingBottom: 10,
-        paddingHorizontal: 0
-    },
+    }
 });
 
 function mapStateToProps(state) {
@@ -86,4 +83,4 @@ function mapDispatchToProps(dispatch) {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Profile);
+export default connect(mapStateToProps, mapDispatchToProps)(Settings);
