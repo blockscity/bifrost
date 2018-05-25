@@ -1,19 +1,21 @@
 import {take, fork, select, call, put, all} from 'redux-saga/effects';
 import {isEmpty} from 'lodash';
+import Promise from 'bluebird';
+import {Navigation} from "react-native-navigation";
+import {Platform} from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+
 import * as actions from '../actions';
 import {INITIALIZE, KEYSTORE, IDENTITY, IPFS, SEED, CLAIMS} from "../actions/types";
 import {REQUEST, SUCCESS, FAILURE} from "../actions";
 import * as selectors from '../reducers/selectors';
+import promisified from './promisified';
 import {
     keystore as keystoreService,
     identities as identityService,
     ipfs as ipfsService,
     claims as claimsService
 } from '../services';
-import promisified from './promisified';
-import Promise from 'bluebird';
-import {Navigation} from "react-native-navigation";
-import {Platform} from 'react-native';
 
 function* logger() {
     while (true) {
@@ -204,36 +206,64 @@ function* successSaga() {
                 }));
                 break;
             case `${INITIALIZE}_${SUCCESS}`:
-                const tabs = [{
-                    label: 'Personal',
-                    screen: 'bifrost.Personal',
-                    icon: require('../imgs/swap.png'),
-                    title: 'Personal',
-                }, {
-                    label: 'Notifications',
-                    screen: 'bifrost.Notifications',
-                    icon: require('../imgs/swap.png'),
-                    title: 'Notifications',
-                }];
+                const navigatorStyle = {
+                    navBarTextColor: 'white',
+                    navBarButtonColor: 'white',
+                    statusBarTextColorScheme: 'light',
+                    statusBarColor: '#000000',
+                    navBarBackgroundColor: "dark",
+                    navBarNoBorder: true
+                };
+
+
                 try {
+                    const icons = yield Promise.all([
+                        Icon.getImageSource('chat', 30),
+                        Icon.getImageSource('notifications', 30),
+                        Icon.getImageSource('person', 30),
+                    ]);
+
+                    const [chats, notifications, person] = icons;
+                    const tabs = [
+                        {
+                            label: 'Chats',
+                            screen: 'bifrost.Personal',
+                            icon: chats,
+                            title: 'Chats',
+                            navigatorStyle
+                        },
+                        {
+                            label: 'Notifications',
+                            screen: 'bifrost.Notifications',
+                            icon: notifications,
+                            title: 'Notifications',
+                            navigatorStyle
+                        },
+                        {
+                            label: 'Me',
+                            screen: 'bifrost.Personal',
+                            icon: person,
+                            title: 'Me',
+                            navigatorStyle
+                        }
+                    ];
                     yield fork(Navigation.startTabBasedApp, {
                         tabs,
                         animationType: Platform.OS === 'ios' ? 'slide-down' : 'fade',
                         tabsStyle: {
-                            tabBarBackgroundColor: '#003a66',
-                            tabBarButtonColor: '#ffffff',
-                            tabBarSelectedButtonColor: '#ff505c',
-                            tabFontFamily: 'BioRhyme-Bold',
+                            tabBarButtonColor: 'grey',
+                            tabBarSelectedButtonColor: 'green',
+                            tabBarBackgroundColor: 'while',
                         },
                         appStyle: {
-                            tabBarBackgroundColor: '#003a66',
+                            tabBarBackgroundColor: 'dark',
                             navBarButtonColor: '#ffffff',
                             tabBarButtonColor: '#ffffff',
                             navBarTextColor: '#ffffff',
                             tabBarSelectedButtonColor: '#ff505c',
                             navigationBarColor: '#003a66',
-                            navBarBackgroundColor: '#003a66',
-                            statusBarColor: '#002b4c',
+                            navBarBackgroundColor: 'black',
+
                             tabFontFamily: 'BioRhyme-Bold',
                         }
                     });
