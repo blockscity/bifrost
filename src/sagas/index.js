@@ -227,7 +227,7 @@ function* successSaga() {
                     const tabs = [
                         {
                             label: 'Chats',
-                            screen: 'bifrost.Personal',
+                            screen: 'bifrost.Chats',
                             icon: chats,
                             title: 'Chats',
                             navigatorStyle
@@ -241,7 +241,7 @@ function* successSaga() {
                         },
                         {
                             label: 'Me',
-                            screen: 'bifrost.Personal',
+                            screen: 'bifrost.Me',
                             icon: person,
                             title: 'Me',
                             navigatorStyle
@@ -263,7 +263,6 @@ function* successSaga() {
                             tabBarSelectedButtonColor: '#ff505c',
                             navigationBarColor: '#003a66',
                             navBarBackgroundColor: 'black',
-
                             tabFontFamily: 'BioRhyme-Bold',
                         }
                     });

@@ -1,12 +1,12 @@
 import React from 'react';
 import {connect} from 'react-redux'
-import {StyleSheet, ScrollView, Text, Alert} from 'react-native';
-import Row from '../components/Row';
+import {StyleSheet, View, ScrollView} from 'react-native';
+import {ListItem, Avatar, Card, Text, Button, Icon} from 'react-native-elements'
 import * as actions from '../actions';
 import * as selectors from '../reducers/selectors'
 
 
-class Notifiaction extends React.Component {
+class Notification extends React.Component {
     constructor(props) {
         super(props);
     }
@@ -14,10 +14,54 @@ class Notifiaction extends React.Component {
     render() {
         const {createIdentity, identity} = this.props;
         return (
-            <ScrollView style={styles.container}>
-                <Row title={'Register'} onPress={() => createIdentity("sjkyspa", "password")}/>
-                <Text>{JSON.stringify(identity)}</Text>
-            </ScrollView>
+            <View style={styles.container}>
+                <ScrollView style={styles.lists}>
+                    <Card
+                        title='MEDICAL HISTORY REQUEST'>
+                        <Text style={{marginBottom: 10}}>
+                            Somebody is about to view you medical history documents
+                        </Text>
+                        <Button
+                            backgroundColor='#03A9F4'
+                            fontFamily='Lato'
+                            buttonStyle={{borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0}}
+                            title='VIEW NOW' />
+                    </Card>
+                    <Card
+                        title='MEDICAL HISTORY REQUEST'>
+                        <Text style={{marginBottom: 10}}>
+                            Somebody is about to view you medical history documents
+                        </Text>
+                        <Button
+                            backgroundColor='#03A9F4'
+                            fontFamily='Lato'
+                            buttonStyle={{borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0}}
+                            title='VIEW NOW' />
+                    </Card>
+                    <Card
+                        title='MEDICAL HISTORY REQUEST'>
+                        <Text style={{marginBottom: 10}}>
+                            Somebody is about to view you medical history documents
+                        </Text>
+                        <Button
+                            backgroundColor='#03A9F4'
+                            fontFamily='Lato'
+                            buttonStyle={{borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0}}
+                            title='VIEW NOW' />
+                    </Card>
+                    <Card
+                        title='MEDICAL HISTORY REQUEST'>
+                        <Text style={{marginBottom: 10}}>
+                            Somebody is about to view you medical history documents
+                        </Text>
+                        <Button
+                            backgroundColor='#03A9F4'
+                            fontFamily='Lato'
+                            buttonStyle={{borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0}}
+                            title='VIEW NOW' />
+                    </Card>
+                </ScrollView>
+            </View>
         );
     }
 }
@@ -25,7 +69,11 @@ class Notifiaction extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: "#F0F0F0",
     },
+    lists: {
+        marginTop: "2%"
+    }
 });
 
 function mapStateToProps(state) {
@@ -36,11 +84,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        createKeystore: (username, password) => dispatch(actions.createIdentity({
-            username: username,
-            password: password
-        }))
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Notifiaction);
+export default connect(mapStateToProps, mapDispatchToProps)(Notification);

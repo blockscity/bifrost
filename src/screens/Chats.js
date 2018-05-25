@@ -1,11 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux'
-import {StyleSheet, ScrollView, Text, Alert} from 'react-native';
-import Row from '../components/Row';
-import * as actions from '../actions';
-import { PURGE } from 'redux-persist';
-import { purgeStoredState } from 'redux-persist'
-import * as selectors from '../reducers/selectors'
+import {StyleSheet, ScrollView, View, Text} from 'react-native';
+import {ListItem, Avatar} from 'react-native-elements'
 
 
 class Personal extends React.Component {
@@ -14,11 +10,65 @@ class Personal extends React.Component {
     }
 
     render() {
-        const {clean, identity} = this.props;
         return (
-            <ScrollView style={styles.container}>
-                <Row title={'Clean'} onPress={() => clean()}/>
-            </ScrollView>
+            <View style={styles.container}>
+                <ScrollView style={styles.container}>
+                    <ListItem
+                        key={"chat1"}
+                        leftElement={<Avatar
+                            size="medium"
+                            icon={{name: 'person', color: "grey"}}
+                            onPress={() => console.log("Works!")}
+                            activeOpacity={0.7}
+                        />}
+                        title={"yuanzheng"}
+                        subtitle={"hello"}
+                        rightElement={
+                            <Text style={{marginBottom: 10}}>
+                                11:11
+                            </Text>
+                        }
+                        bottomDivider={true}
+                        topDivider={true}
+                    />
+                    <ListItem
+                        key={"chat2"}
+                        leftElement={<Avatar
+                            size="medium"
+                            icon={{name: 'person', color: "grey"}}
+                            onPress={() => console.log("Works!")}
+                            activeOpacity={0.7}
+                        />}
+                        title={"yuanzheng"}
+                        subtitle={"hello"}
+                        rightElement={
+                            <Text style={{marginBottom: 10}}>
+                                11:11
+                            </Text>
+                        }
+                        bottomDivider={true}
+                        topDivider={true}
+                    />
+                    <ListItem
+                        key={"chat3"}
+                        leftElement={<Avatar
+                            size="medium"
+                            icon={{name: 'person', color: "grey"}}
+                            onPress={() => console.log("Works!")}
+                            activeOpacity={0.7}
+                        />}
+                        title={"yuanzheng"}
+                        subtitle={"hello"}
+                        rightElement={
+                            <Text style={{marginBottom: 10}}>
+                                11:11
+                            </Text>
+                        }
+                        bottomDivider={true}
+                        topDivider={true}
+                    />
+                </ScrollView>
+            </View>
         );
     }
 }
@@ -31,17 +81,11 @@ const styles = StyleSheet.create({
 
 function mapStateToProps(state) {
     return {
-        identity: selectors.keystore(state)
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        clean: () => dispatch({
-            type: PURGE,
-            key: "root",
-            result: () => null
-        })
     }
 }
 
