@@ -2,9 +2,6 @@ import React from 'react';
 import {connect} from 'react-redux'
 import {StyleSheet, View, ScrollView} from 'react-native';
 import {ListItem, Avatar, Icon} from 'react-native-elements'
-import {PURGE} from 'redux-persist';
-
-import * as actions from '../actions';
 import * as selectors from '../reducers/selectors'
 
 
@@ -14,7 +11,7 @@ class Me extends React.Component {
     }
 
     render() {
-        const {clean, identity, navigator} = this.props;
+        const {identity, navigator} = this.props;
         return (
             <View style={styles.container}>
                 <ScrollView style={styles.lists}>
@@ -52,6 +49,12 @@ class Me extends React.Component {
                             title={"Settings"}
                             chevron
                             chevronColor={"#B5B5B5"}
+                            onPress={
+                                () => navigator.push({
+                                    title: 'Settings',
+                                    screen: 'bifrost.Settings'
+                                })
+                            }
                         />
                     </View>
 
@@ -79,11 +82,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        clean: () => dispatch({
-            type: PURGE,
-            key: "root",
-            result: () => null
-        })
+
     }
 }
 

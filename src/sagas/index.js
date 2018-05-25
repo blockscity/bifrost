@@ -148,11 +148,19 @@ function* requestSagas() {
                     yield put(actions.initialize.success());
                 } else {
                     try {
+                        const navigatorStyle = {
+                            navBarTextColor: 'white',
+                            navBarButtonColor: 'white',
+                            statusBarTextColorScheme: 'light',
+                            statusBarColor: '#000000',
+                            navBarBackgroundColor: "dark",
+                            navBarNoBorder: true
+                        };
                         yield fork(Navigation.startSingleScreenApp, {
                             screen: {
                                 screen: 'bifrost.Register',
                                 title: 'Welcome',
-                                navigatorStyle: {},
+                                navigatorStyle,
                                 navigatorButtons: {}
                             },
                         });

@@ -1,6 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux'
-import {StyleSheet, View, ScrollView} from 'react-native';
+import {StyleSheet, View, ScrollView, Text} from 'react-native';
 import {ListItem, Avatar, Icon} from 'react-native-elements'
 import * as selectors from '../reducers/selectors'
 
@@ -25,10 +25,33 @@ class Profile extends React.Component {
                                 activeOpacity={0.7}
                             />
                         }
-                        title={"test"}
-                        subtitle={"test"}
+                        title={"Profile Photo"}
                         chevron
                         chevronColor={"#B5B5B5"}
+                        topDivider={true}
+                        bottomDivider={true}
+                    />
+                    <ListItem
+                        key={"email"}
+                        rightElement={
+                            <Text>sjkysp@gmail.com</Text>
+                        }
+                        title={"Email"}
+                        chevron
+                        chevronColor={"#B5B5B5"}
+                        topDivider={true}
+                        bottomDivider={true}
+                    />
+                    <ListItem
+                        key={"phone"}
+                        rightElement={
+                            <Text>19991974369</Text>
+                        }
+                        title={"Phone"}
+                        chevron
+                        chevronColor={"#B5B5B5"}
+                        topDivider={true}
+                        bottomDivider={true}
                     />
                 </ScrollView>
             </View>
