@@ -161,7 +161,17 @@ function* requestSagas() {
                                 screen: 'bifrost.Register',
                                 title: 'Welcome',
                                 navigatorStyle,
-                                navigatorButtons: {}
+                                navigatorButtons: {},
+                                appStyle: {
+                                    tabBarBackgroundColor: 'dark',
+                                    navBarButtonColor: '#ffffff',
+                                    tabBarButtonColor: '#ffffff',
+                                    navBarTextColor: '#ffffff',
+                                    tabBarSelectedButtonColor: '#ff505c',
+                                    navigationBarColor: '#003a66',
+                                    navBarBackgroundColor: 'black',
+                                    tabFontFamily: 'BioRhyme-Bold',
+                                }
                             },
                         });
                     } catch (e) {
