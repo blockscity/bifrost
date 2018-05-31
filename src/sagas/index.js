@@ -1,7 +1,6 @@
-import {take, fork, select, call, put, all} from 'redux-saga/effects';
+import {take, fork, select, call, put, all, spawn} from 'redux-saga/effects';
 import {isEmpty} from 'lodash';
 import Promise from 'bluebird';
-import {Navigation} from "react-native-navigation";
 import {Platform} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -21,7 +20,13 @@ function* logger() {
     while (true) {
         const action = yield take("*");
         const state = yield select();
-        console.log("Action: " + JSON.stringify(action) + " happend with state: " + JSON.stringify(state));
+        try {
+            console.log("Action: " + JSON.stringify(action) + " happend with state: " + JSON.stringify(state));
+        } catch (e) {
+            console.error(action);
+            console.error(state);
+            console.error(e);
+        }
     }
 }
 
@@ -52,8 +57,9 @@ function* requestSagas() {
         if (!identity || isEmpty(identity)) {
             try {
                 let identity = yield call(identityService.identities, payload, meta);
+                // identity: {}
                 yield put(actions.identities.success({
-                    identity: identity
+                    identity
                 }));
             } catch (e) {
                 yield put(actions.identities.failure({
@@ -65,8 +71,9 @@ function* requestSagas() {
                 }));
             }
         } else {
+            // identity: {}
             yield put(actions.identities.success({
-                identity: {...identity}
+                identity: identity.identity
             }));
         }
 
@@ -90,7 +97,7 @@ function* requestSagas() {
                 );
             }
         } else {
-            yield put(actions.ipfs.upload.success({ipfs: ipfs}));
+            yield put(actions.ipfs.upload.success({ipfs: ipfs.ipfs}));
         }
 
     }
@@ -142,43 +149,43 @@ function* requestSagas() {
             case `${CLAIMS.SET}_${REQUEST}`:
                 yield fork(claimsHandler, payload, meta);
                 break;
-            case `${INITIALIZE}_${REQUEST}`:
-                let ks = yield select(selectors.keystore);
-                if (ks && !isEmpty(ks)) {
-                    yield put(actions.initialize.success());
-                } else {
-                    try {
-                        const navigatorStyle = {
-                            navBarTextColor: 'white',
-                            navBarButtonColor: 'white',
-                            statusBarTextColorScheme: 'light',
-                            statusBarColor: '#000000',
-                            navBarBackgroundColor: "dark",
-                            navBarNoBorder: true
-                        };
-                        yield fork(Navigation.startSingleScreenApp, {
-                            screen: {
-                                screen: 'bifrost.Register',
-                                title: 'Welcome',
-                                navigatorStyle,
-                                navigatorButtons: {},
-                                appStyle: {
-                                    tabBarBackgroundColor: 'dark',
-                                    navBarButtonColor: '#ffffff',
-                                    tabBarButtonColor: '#ffffff',
-                                    navBarTextColor: '#ffffff',
-                                    tabBarSelectedButtonColor: '#ff505c',
-                                    navigationBarColor: '#003a66',
-                                    navBarBackgroundColor: 'black',
-                                    tabFontFamily: 'BioRhyme-Bold',
-                                }
-                            },
-                        });
-                    } catch (e) {
-                        console.log(e, "error initialize")
-                    }
-                }
-                break;
+            // case `${INITIALIZE}_${REQUEST}`:
+                // let ks = yield select(selectors.keystore);
+                // if (ks && !isEmpty(ks)) {
+                //     yield put(actions.initialize.success());
+                // } else {
+                //     try {
+                //         const navigatorStyle = {
+                //             navBarTextColor: 'white',
+                //             navBarButtonColor: 'white',
+                //             statusBarTextColorScheme: 'light',
+                //             statusBarColor: '#000000',
+                //             navBarBackgroundColor: "dark",
+                //             navBarNoBorder: true
+                //         };
+                //         yield call(Navigation.startSingleScreenApp, {
+                //             screen: {
+                //                 screen: 'bifrost.Register',
+                //                 title: 'Register',
+                //                 navigatorStyle,
+                //                 navigatorButtons: {},
+                //                 appStyle: {
+                //                     tabBarBackgroundColor: 'dark',
+                //                     navBarButtonColor: '#ffffff',
+                //                     tabBarButtonColor: '#ffffff',
+                //                     navBarTextColor: '#ffffff',
+                //                     tabBarSelectedButtonColor: '#ff505c',
+                //                     navigationBarColor: '#003a66',
+                //                     navBarBackgroundColor: 'black',
+                //                     tabFontFamily: 'BioRhyme-Bold',
+                //                 }
+                //             },
+                //         });
+                //     } catch (e) {
+                //         console.log(e, "error initialize")
+                //     }
+                // }
+                // break;
             default:
         }
     }
@@ -190,9 +197,19 @@ function* successSaga() {
         switch (type) {
             case `${IDENTITY}_${SUCCESS}`:
                 // call the ipfs save the identity and the pub key
+
+                // call the ethereum and save the ipfs key
+                yield spawn(() => put(actions.initialize.success()));
+
+                break;
+            case `${KEYSTORE}_${SUCCESS}`:
+                let keystore = payload.keystore;
+                keystore.passwordProvider = function (callback) {
+                    callback(null, '111');
+                };
                 yield put(actions.ipfs.upload.request({
                     body: {
-                        id: payload.identity.id,
+                        id: keystore.getAddresses()[0],
                         publicKey: [{
                             id: "",
                             type: "type",
@@ -206,88 +223,86 @@ function* successSaga() {
                         ]
                     }
                 }));
-                // call the ethereum and save the ipfs key
-                yield put(actions.initialize.success());
-                break;
-            case `${KEYSTORE}_${SUCCESS}`:
-                let keystore = payload.keystore;
-                keystore.passwordProvider = function (callback) {
-                    callback(null, '111');
-                };
-                let derivedKey = yield call(Promise.promisify(keystore.keyFromPassword, {context: keystore}), '111');
-                yield put(actions.identities.request({keystore: keystore, derivedKey: derivedKey}));
                 break;
             case `${IPFS.UPLOAD}_${SUCCESS}`:
-                //todo: should call the claims and save the hash
-                yield put(actions.claims.set.request({
-                    ipfs: payload.ipfs
-                }));
-                break;
-            case `${INITIALIZE}_${SUCCESS}`:
-                const navigatorStyle = {
-                    navBarTextColor: 'white',
-                    navBarButtonColor: 'white',
-                    statusBarTextColorScheme: 'light',
-                    statusBarColor: '#000000',
-                    navBarBackgroundColor: "dark",
-                    navBarNoBorder: true
+                // //todo: should call the claims and save the hash
+                // yield put(actions.claims.set.request({
+                //     ipfs: payload.ipfs
+                // }));
+                let ks = yield select(selectors.keystore);
+
+                ks.passwordProvider = function (callback) {
+                    callback(null, '111');
                 };
+                let derivedKey = yield call(Promise.promisify(ks.keyFromPassword, {context: ks}), '111');
+                yield put(actions.identities.request({keystore: ks, derivedKey: derivedKey, ipfs: payload.ipfs}));
 
-
-                try {
-                    const icons = yield Promise.all([
-                        Icon.getImageSource('chat', 30),
-                        Icon.getImageSource('notifications', 30),
-                        Icon.getImageSource('person', 30),
-                    ]);
-
-                    const [chats, notifications, person] = icons;
-                    const tabs = [
-                        {
-                            label: 'Chats',
-                            screen: 'bifrost.Chats',
-                            icon: chats,
-                            title: 'Chats',
-                            navigatorStyle
-                        },
-                        {
-                            label: 'Notifications',
-                            screen: 'bifrost.Notifications',
-                            icon: notifications,
-                            title: 'Notifications',
-                            navigatorStyle
-                        },
-                        {
-                            label: 'Me',
-                            screen: 'bifrost.Me',
-                            icon: person,
-                            title: 'Me',
-                            navigatorStyle
-                        }
-                    ];
-                    yield fork(Navigation.startTabBasedApp, {
-                        tabs,
-                        animationType: Platform.OS === 'ios' ? 'slide-down' : 'fade',
-                        tabsStyle: {
-                            tabBarButtonColor: 'grey',
-                            tabBarSelectedButtonColor: 'green',
-                            tabBarBackgroundColor: 'while',
-                        },
-                        appStyle: {
-                            tabBarBackgroundColor: 'dark',
-                            navBarButtonColor: '#ffffff',
-                            tabBarButtonColor: '#ffffff',
-                            navBarTextColor: '#ffffff',
-                            tabBarSelectedButtonColor: '#ff505c',
-                            navigationBarColor: '#003a66',
-                            navBarBackgroundColor: 'black',
-                            tabFontFamily: 'BioRhyme-Bold',
-                        }
-                    });
-                } catch (e) {
-                    console.log(e, "error for started")
-                }
                 break;
+            // case `${INITIALIZE}_${SUCCESS}`:
+                // const navigatorStyle = {
+                //     navBarTextColor: 'white',
+                //     navBarButtonColor: 'white',
+                //     statusBarTextColorScheme: 'light',
+                //     statusBarColor: '#000000',
+                //     navBarBackgroundColor: "dark",
+                //     navBarNoBorder: true
+                // };
+                //
+                //
+                // try {
+                //     const icons = yield Promise.all([
+                //         Icon.getImageSource('chat', 30),
+                //         Icon.getImageSource('notifications', 30),
+                //         Icon.getImageSource('person', 30),
+                //     ]);
+                //
+                //     const [chats, notifications, person] = icons;
+                //     const tabs = [
+                //         {
+                //             label: 'Chats',
+                //             screen: 'bifrost.Chats',
+                //             icon: chats,
+                //             title: 'Chats',
+                //             navigatorStyle
+                //         },
+                //         {
+                //             label: 'Notifications',
+                //             screen: 'bifrost.Notifications',
+                //             icon: notifications,
+                //             title: 'Notifications',
+                //             navigatorStyle
+                //         },
+                //         {
+                //             label: 'Me',
+                //             screen: 'bifrost.Me',
+                //             icon: person,
+                //             title: 'Me',
+                //             navigatorStyle
+                //         }
+                //     ];
+                //     yield call(Navigation.startTabBasedApp, {
+                //         tabs,
+                //         animationType: Platform.OS === 'ios' ? 'slide-down' : 'fade',
+                //         tabsStyle: {
+                //             tabBarButtonColor: 'grey',
+                //             tabBarSelectedButtonColor: 'green',
+                //             tabBarBackgroundColor: 'while',
+                //         },
+                //         appStyle: {
+                //             tabBarBackgroundColor: 'dark',
+                //             navBarButtonColor: '#ffffff',
+                //             tabBarButtonColor: '#ffffff',
+                //             navBarTextColor: '#ffffff',
+                //             tabBarSelectedButtonColor: '#ff505c',
+                //             navigationBarColor: '#003a66',
+                //             navBarBackgroundColor: 'black',
+                //             tabFontFamily: 'BioRhyme-Bold',
+                //         }
+                //     });
+                // } catch (e) {
+                //     console.log(e, "error for started")
+                // }
+                // break;
             default:
         }
     }

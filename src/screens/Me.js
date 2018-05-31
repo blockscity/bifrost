@@ -25,7 +25,7 @@ class Me extends React.Component {
                                 activeOpacity={0.7}
                             />}
                             title={"yeah~yeah~yeah"}
-                            subtitle={"Address:0xxxxxxx"}
+                            subtitle={`Address:0x00aaa`}
                             onPress={
                                 () => navigator.push({
                                     title: 'Profile',
@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
 
 function mapStateToProps(state) {
     return {
-        identity: selectors.keystore(state)
+        identity: state.identity
     }
 }
 

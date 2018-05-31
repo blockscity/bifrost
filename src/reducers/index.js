@@ -15,6 +15,7 @@ function keystore(state = {}, action) {
 function identity(state = {}, action) {
     switch (action.type) {
         case `${IDENTITY}_${SUCCESS}`:
+            console.log(action.payload);
             return Object.assign(state, {identity: action.payload.identity});
         default:
             return state;

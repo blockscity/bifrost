@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "ENVFILE=.env.dev node node_modules/react-native/local-cli/cli.js start",
-    "android": "ENVFILE=.env.dev node node_modules/react-native/local-cli/cli.js run-andorid",
+    "android": "ENVFILE=.env.dev node node_modules/react-native/local-cli/cli.js run-android",
     "ios": "ENVFILE=.env.dev node node_modules/react-native/local-cli/cli.js run-ios",
     "test": "jest"
   },
@@ -31,13 +31,12 @@
     "path-browserify": "0.0.0",
     "prop-types": "^15.6.1",
     "react": "16.3.1",
-    "react-native": "0.55.4",
+    "react-native": "0.55.0",
     "react-native-browser-polyfill": "^0.1.2",
     "react-native-config": "^0.11.5",
     "react-native-crypto": "^2.1.2",
     "react-native-elements": "^1.0.0-beta5",
     "react-native-http": "github:sjkyspa/react-native-http",
-    "react-native-navigation": "^1.1.458",
     "react-native-randombytes": "^3.1.0",
     "react-native-vector-icons": "^4.6.0",
     "react-redux": "^5.0.7",
